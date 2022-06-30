@@ -1,4 +1,6 @@
-﻿namespace TargetWord.Models
+﻿using TargetWord.Core.Models;
+
+namespace TargetWord.Core.Models
 {
     public class GameState
     {

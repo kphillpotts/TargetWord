@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TargetWord.Models
+namespace TargetWord.Core.Models
 {
     public class GameLetter
     {

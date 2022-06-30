@@ -22,33 +22,26 @@
 
         public async Task LoadDictionary()
         {
-            CommonWordList = await LoadWordListFromFile(@"Assets\Dictionary\CommonWords.txt");
-            ObscureWordList = await LoadWordListFromFile(@"Assets\Dictionary\ObscureWords.txt");
+            CommonWordList = await LoadWordListFromFile(@"CommonWords.txt");
+            ObscureWordList = await LoadWordListFromFile(@"ObscureWords.txt");
         }
 
         public async Task<List<string>> LoadWordListFromFile(string path)
         {
             //TODO: Write methods which pull from a dictionary
             var returnList = new List<string>();
-            //StorageFile file = await Package.Current.InstalledLocation.GetFileAsync(path);
 
-            //IInputStream stream = await file.OpenSequentialReadAsync();
+            using var stream = await FileSystem.OpenAppPackageFileAsync(path);
+            using var reader = new StreamReader(stream);
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    returnList.Add(line);
+                }
 
-            //var rdr = new StreamReader(stream.AsStreamForRead());
-
-            //using (var sr = new StreamReader(stream.AsStreamForRead()))
-            //{
-            //    String line;
-            //    while ((line = sr.ReadLine()) != null)
-            //    {
-            //        returnList.Add(line);
-            //    }
-            //}
+            }
             return returnList;
         }
-
-
-
-
     }
 }

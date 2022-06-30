@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace TargetWord.Models
+namespace TargetWord.Core.Models
 {
     public class Game
     {
@@ -193,7 +193,7 @@ namespace TargetWord.Models
             if (GameSession.GameInProgress == false)
                 return new SubmitResponse { Acceptable = false, ValidationMessage = "Game Over" };
 
-            if ((String.IsNullOrEmpty(word)) || (word.Length < GetMinimumWordLength(GameSession.GameDifficulty)))
+            if (string.IsNullOrEmpty(word) || word.Length < GetMinimumWordLength(GameSession.GameDifficulty))
                 return new SubmitResponse { Acceptable = false, ValidationMessage = "Word must be at least " + GetMinimumWordLength(GameSession.GameDifficulty) + " characters" };
 
             if (!word.ToLower().Contains(TargetLetter().Letter.ToLower()))
@@ -250,12 +250,12 @@ namespace TargetWord.Models
 
         public GameWord GetWordHint()
         {
-            int wordcount = GameSession.WordList.Where(w => (w.Found == false)).Count();
+            int wordcount = GameSession.WordList.Where(w => w.Found == false).Count();
             if (wordcount == 0)
                 return null;
 
             GameWord result =
-                GameSession.WordList.Where(w => (w.Found == false)).ElementAtOrDefault(_rnd.Next(0, wordcount - 1));
+                GameSession.WordList.Where(w => w.Found == false).ElementAtOrDefault(_rnd.Next(0, wordcount - 1));
             if (result == null)
                 return null;
             else
@@ -294,7 +294,7 @@ namespace TargetWord.Models
 
 
             GameLetter result =
-                GameSession.GameLetters.Where(o => (o.Letter.ToLower() == p.ToLower()) && (o.Selected == false))
+                GameSession.GameLetters.Where(o => o.Letter.ToLower() == p.ToLower() && o.Selected == false)
                            .FirstOrDefault();
             if (result != null)
             {
@@ -310,7 +310,7 @@ namespace TargetWord.Models
 
         public GameLetter TargetLetter()
         {
-            if ((GameSession.GameLetters == null) || (GameSession.GameLetters.Count < 5))
+            if (GameSession.GameLetters == null || GameSession.GameLetters.Count < 5)
                 throw new InvalidOperationException("Game contains less than 5 letters, unable to get taret letter");
 
             return GameSession.GameLetters[4];
@@ -466,7 +466,7 @@ namespace TargetWord.Models
                 // randomize the letter order of the word. We want to do this so that
                 // when we try and calculate a target letter we don't have a bias for the first 
                 // characters in the word
-                randomLetters = new string(nineLetterWord.ToCharArray().OrderBy(s => (_rnd.Next(2) % 2) == 0).ToArray());
+                randomLetters = new string(nineLetterWord.ToCharArray().OrderBy(s => _rnd.Next(2) % 2 == 0).ToArray());
 
                 // find the first letter that could be a target letter that produces at least 20 words
                 targetLetter = CalculateTargetLetter(randomLetters, allPossibleWords, GetMinimumWordLength(difficulty));
@@ -513,7 +513,7 @@ namespace TargetWord.Models
             bool passedTargetLetter = false;
             foreach (char character in randomLetters.ToCharArray())
             {
-                if ((character == targetLetter) && (!passedTargetLetter))
+                if (character == targetLetter && !passedTargetLetter)
                 {
                     passedTargetLetter = true;
                     continue;
@@ -534,7 +534,7 @@ namespace TargetWord.Models
 
             var resultWords = new List<string>();
 
-            foreach (string item in dictionary.Where(o => (o.Length >= minWordLength) && (o.Length <= 9)))
+            foreach (string item in dictionary.Where(o => o.Length >= minWordLength && o.Length <= 9))
             {
                 bool isvalid = true;
 
